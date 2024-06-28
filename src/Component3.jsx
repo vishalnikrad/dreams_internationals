@@ -9,6 +9,8 @@ function Component3() {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Number of items per page
+    const [loading, setLoading] = useState(true); // Loading state for API fetch
+
     const countdownRef = useRef(null);
 
     const handleChange = (event) => {
@@ -54,9 +56,11 @@ function Component3() {
         axios.get('https://api.knowmee.co/api/v1/master/get-country-list')
             .then((res) => {
                 setData(res.data.responseData);
+                setLoading(false); // Set loading to false once data is fetched
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
+                setLoading(false); // Also set loading to false on error
             });
     }, []);
 
@@ -110,11 +114,15 @@ function Component3() {
                             Next
                         </button>
                     </div>
-                    <ul type="none">
-                        {currentItems.map((val, i) => (
-                            <li key={i}><p className='fw-bold'>{val.country_name}</p></li>
-                        ))}
-                    </ul>
+                    {loading ? (
+                        <h1>Fetching Data, Please wait...</h1>
+                    ) : (
+                        <ul type="none">
+                            {currentItems.map((val, i)=>(
+                                <li key={i}><p className='fw-bold'>{val.country_name}</p></li>
+                            ))}
+                        </ul>
+                    )}
                 </section>
             )}
         </div>
